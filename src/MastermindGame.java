@@ -4,17 +4,18 @@ import java.util.Scanner;
 public class MastermindGame {
     private static final int MAX_ATTEMPTS = 12;
     private static final int MAX_CODE_LENGTH = 4;
+    private final Scanner scanner;
+
     private MastermindColor[] secretCode = new MastermindColor[MAX_CODE_LENGTH];
     private final Evaluator evaluator = new Evaluator(MAX_ATTEMPTS);
     private final CodeGenerator codeGenerator = new CodeGenerator(MAX_CODE_LENGTH);
+
     private String playerName = "";
     private int attempts = 0;
-    private final Scanner scanner;
 
 
     public MastermindGame(Scanner scanner) {
         this.scanner = scanner;
-
     }
 
     public void start(){

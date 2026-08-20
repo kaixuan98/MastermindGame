@@ -5,9 +5,5 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         MastermindGame game = new MastermindGame(scanner);
         game.start();
-
-
-
-
     }
 }
