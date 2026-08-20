@@ -21,7 +21,6 @@ public class MastermindGame {
         playerName = getPlayerName();
         gameMode = selectGameMode();
         generateCode();
-        System.out.printf("Code: %s \n", Arrays.toString(secretCode));
         String gameStatus = "playing";
 
         while(attempts < MAX_ATTEMPTS && gameStatus.equals("playing")){
