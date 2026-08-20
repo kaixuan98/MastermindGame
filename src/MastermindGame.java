@@ -6,6 +6,7 @@ public class MastermindGame {
     private static final int MAX_ATTEMPTS = 12;
     private static final int MAX_CODE_LENGTH = 4;
     private MastermindColor[] secretCode = new MastermindColor[MAX_CODE_LENGTH];
+    private final Evaluator evaluator = new Evaluator(MAX_ATTEMPTS);
     private String playerName = "";
     private int gameMode = 0;
     private int attempts = 0;
@@ -14,6 +15,7 @@ public class MastermindGame {
 
     public MastermindGame(Scanner scanner) {
         this.scanner = scanner;
+
     }
 
     public void start(){
@@ -27,7 +29,7 @@ public class MastermindGame {
             System.out.print("\nEnter your guess:");
             String rawGuess = scanner.nextLine();
             MastermindColor[] formatedGuess = formateGuess(rawGuess);
-            EvalutorResult result = eval(formatedGuess);
+            EvaluatorResult result = evaluator.eval(formatedGuess, secretCode);
 
             if(result.black == 4){
                 gameStatus = "win";
@@ -130,41 +132,7 @@ public class MastermindGame {
         return formatedGuess;
     }
 
-    private EvalutorResult eval(MastermindColor[] guess){
-        int black = 0;
-        int white = 0;
-        boolean[] secretUsed = new boolean[4];
-        boolean[] guessMatched = new boolean[4];
-
-        // find black first
-        for (int i = 0; i < guess.length; i++) {
-            if(guess[i].equals(secretCode[i])){
-                black++;
-                secretUsed[i] = true;
-                guessMatched[i] = true;
-            }
-        }
-
-        // find the white
-        for (int i = 0; i < guess.length; i++) {
-            if(!guessMatched[i]) { // only check the unused guess
-                for (int j = 0; j < secretCode.length; j++) {
-                    if(!secretUsed[j]){ // check only the unsued secret
-                        if(guess[i].equals(secretCode[j])){
-                            white++;
-                            secretUsed[j] = true;
-                            guessMatched[i] = true;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        return new EvalutorResult(black,white);
-    }
-
-    private String displayResult(EvalutorResult result){
+    private String displayResult(EvaluatorResult result){
         return "Black: " + result.black + "\nWhite: " + result.white;
     }
 
