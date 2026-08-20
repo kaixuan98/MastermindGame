@@ -1,5 +1,4 @@
 import java.util.Arrays;
-import java.util.Random;
 import java.util.Scanner;
 
 public class MastermindGame {
@@ -7,8 +6,8 @@ public class MastermindGame {
     private static final int MAX_CODE_LENGTH = 4;
     private MastermindColor[] secretCode = new MastermindColor[MAX_CODE_LENGTH];
     private final Evaluator evaluator = new Evaluator(MAX_ATTEMPTS);
+    private final CodeGenerator codeGenerator = new CodeGenerator(MAX_CODE_LENGTH);
     private String playerName = "";
-    private int gameMode = 0;
     private int attempts = 0;
     private final Scanner scanner;
 
@@ -21,8 +20,8 @@ public class MastermindGame {
     public void start(){
         displayWelcome();
         playerName = getPlayerName();
-        gameMode = selectGameMode();
-        generateCode();
+        int gameMode = selectGameMode();
+        secretCode = codeGenerator.generate(gameMode);
         String gameStatus = "playing";
 
         while(attempts < MAX_ATTEMPTS && gameStatus.equals("playing")){
@@ -93,34 +92,6 @@ public class MastermindGame {
         return gameMode;
     }
 
-    private void generateCode(){
-        Random random = new Random();
-        int upperBound = MastermindColor.values().length;
-        int[] codeIdx = new int[MAX_CODE_LENGTH];
-
-        if(gameMode == 2){
-            for (int i = 0; i < MAX_CODE_LENGTH ; i++) {
-                int randomIdx = random.nextInt(0,upperBound);
-                codeIdx[i]  = randomIdx;
-            }
-        }
-
-        if(gameMode == 1){
-            for (int i = 0; i < MAX_CODE_LENGTH ; i++) {
-                int[] searchSpace = Arrays.copyOfRange(codeIdx, 0,i);
-                int randomIdx = random.nextInt(0,upperBound);
-                while(contains(searchSpace, randomIdx)){
-                    randomIdx = random.nextInt(0,upperBound);
-                }
-                codeIdx[i] = randomIdx;
-            }
-        }
-
-        for (int i = 0; i < MAX_CODE_LENGTH; i++) {
-            secretCode[i] = MastermindColor.values()[codeIdx[i]];
-        }
-    }
-
     private MastermindColor[] formateGuess(String rawGuess){
         String[] splitGuess = rawGuess.split(",");
         MastermindColor[] formatedGuess = new MastermindColor[4];
@@ -134,15 +105,6 @@ public class MastermindGame {
 
     private String displayResult(EvaluatorResult result){
         return "Black: " + result.black + "\nWhite: " + result.white;
-    }
-
-    private boolean contains(int[] arr, int target){
-        for (int j : arr) {
-            if (j == target) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void end(String gameStatus){
