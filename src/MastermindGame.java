@@ -32,7 +32,7 @@ public class MastermindGame {
             MastermindColor[] formatedGuess = formateGuess(rawGuess);
             EvaluatorResult result = evaluator.eval(formatedGuess, secretCode);
 
-            if(result.black == 4){
+            if(result.black == MAX_CODE_LENGTH){
                 gameStatus = GameStatus.WIN;
             }else{
                 String feedback = displayResult(result);
