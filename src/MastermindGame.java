@@ -12,6 +12,7 @@ public class MastermindGame {
 
     private String playerName = "";
     private int attempts = 0;
+    private GameStatus gameStatus;
 
 
     public MastermindGame(Scanner scanner) {
@@ -23,16 +24,16 @@ public class MastermindGame {
         playerName = getPlayerName();
         int gameMode = selectGameMode();
         secretCode = codeGenerator.generate(gameMode);
-        String gameStatus = "playing";
+        gameStatus = GameStatus.PLAYING;
 
-        while(attempts < MAX_ATTEMPTS && gameStatus.equals("playing")){
+        while(attempts < MAX_ATTEMPTS && gameStatus == GameStatus.PLAYING){
             System.out.print("\nEnter your guess:");
             String rawGuess = scanner.nextLine();
             MastermindColor[] formatedGuess = formateGuess(rawGuess);
             EvaluatorResult result = evaluator.eval(formatedGuess, secretCode);
 
             if(result.black == 4){
-                gameStatus = "win";
+                gameStatus = GameStatus.WIN;
             }else{
                 String feedback = displayResult(result);
                 System.out.print(feedback);
@@ -40,10 +41,11 @@ public class MastermindGame {
             attempts++;
             }
 
-            if(gameStatus.equals("playing")){
-                gameStatus="lose";
+            if(gameStatus == GameStatus.PLAYING){
+                gameStatus= GameStatus.LOSE;
             }
-            end(gameStatus);
+
+            end();
     }
 
     private void displayWelcome(){
@@ -108,19 +110,12 @@ public class MastermindGame {
         return "Black: " + result.black + "\nWhite: " + result.white;
     }
 
-    private void end(String gameStatus){
-        if(gameStatus.equals("lose")){
+    private void end(){
+        if(gameStatus == GameStatus.LOSE ){
             System.out.printf("Good game, %s !\n", playerName);
             System.out.printf("The code is %s\n", Arrays.toString(secretCode));
-        }else if(gameStatus.equals("win")){
+        }else if(gameStatus == GameStatus.WIN){
             System.out.printf("You win. Total attempts:%d", attempts);
         }
     }
-
-
-
-
-
-
-
 }
